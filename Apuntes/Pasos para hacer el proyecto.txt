@@ -1,0 +1,47 @@
+1- Crear repo nuevo
+
+    1.1 Haz un repositorio nuevo en GitHub, por ejemplo:
+
+        ejercicio-api-mongodb-mongoose
+
+    Luego clónalo:
+
+        git clone https://github.com/TU_USUARIO/ejercicio-api-mongodb-mongoose.git
+        cd ejercicio-api-mongodb-mongoose
+
+2- Inicializar Node
+    npm init -y
+
+3- Instalar dependencias
+
+    La plantilla usa express, mongoose y dotenv, y el enunciado te pide Morgan. El package.json del repo plantilla también incluye nodemon.
+
+    Instala:
+
+        npm install express mongoose dotenv morgan
+        npm install -D nodemon
+
+    Y deja los scripts así:
+
+        {
+        "scripts": {
+            "dev": "nodemon server.js",
+            "start": "node server.js"
+        }
+        }
+
+4- Variables de entorno
+
+    Crea el archivo .env:
+
+        PORT=3000
+        MY_MONGO_URI=mongodb://127.0.0.1:27017/ejercicio_api_rest
+
+    Y .env.example:
+
+        PORT=3000
+        MY_MONGO_URI=
+
+    La plantilla ya expone MY_MONGO_URI como variable de entorno esperada.
+
+5- 
