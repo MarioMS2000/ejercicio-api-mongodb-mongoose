@@ -32,6 +32,8 @@
 
 4- Variables de entorno
 
+    Servidor → dotenv → variables → config app
+
     Crea el archivo .env:
 
         PORT=3000
@@ -44,4 +46,97 @@
 
     La plantilla ya expone MY_MONGO_URI como variable de entorno esperada.
 
-5- 
+5- Conexión a MongoDB externalizada
+
+    Servidor → config/db_mongo → MongoDB
+
+    config/db_mongo.js
+
+6- Modelado de datos
+
+    Controller → Model → MongoDB → Model → Controller
+
+    Aquí aplicamos la misma idea del demo de Game y Publisher: el producto guarda un ObjectId apuntando al proveedor, y luego se usa populate() para traer datos relacionados.
+
+    models/Provider.js
+
+7- Servicios auxiliares
+
+    Controller → Service → Model → MongoDB → Model → Service → Controller
+
+    Sirve para separar la lógica de acceso a la base de datos del resto de la aplicación.
+
+        Encapsular consultas a la base de datos.
+        Separar lógica (arquitectura limpia).
+        Reutilizar código.
+        Facilitar mantenimiento.
+
+8- Controladores
+
+    Cliente → Middleware → Ruta → Controller → Modelo → DB
+                                   ↓
+    Cliente ← Middleware ← Controller ← Modelo ← DB
+
+    Aquí va la lógica de negocio real.
+    Decide qué hacer cuando llega una petición (GET, POST, PUT, DELETE).
+    
+        controllers/providers.controller.js
+        controllers/products.controller.js
+
+9- Routes
+
+    Cliente → Middleware → Ruta → Controller
+
+    Aquí es donde conectas todo lo anterior (controllers) con las rutas HTTP
+        Es decir: defines qué URL llama a qué función.
+            routes/providers.routes.js
+            routes/products.routes.js
+
+10- Middlewares
+
+    Middleware normal
+        Cliente → Middleware → Ruta → Controller
+
+    notFound (404)
+        Cliente → Middleware → Ruta ❌ → notFound → Respuesta
+
+    errorHandler (500)
+    
+    Cliente → Middleware → Ruta → Controller 💥 → next(error) → errorHandler → Respuesta
+
+    Una función que se ejecuta entre la petición del cliente y la respuesta
+
+    Flujo en tu API
+        Cliente → Middleware → Ruta → Controller → Middleware → Respuesta
+                middlewares/notFound.js
+                middlewares/errorHandler.js
+
+11- Servidor principal
+
+    Server.js (flujo completo REAL)
+        Cliente 
+        ↓
+        Middleware (express.json, morgan)
+        ↓
+        Ruta (/products, /providers)
+        ↓
+        Controller
+        ↓
+        Modelo (Mongoose)
+        ↓
+        MongoDB
+        ↓
+        Controller (respuesta)
+        ↓
+        Middleware (errorHandler si falla)
+        ↓
+        Respuesta al cliente
+
+    Aquí es donde arranca tu servidor y se conecta todo. El archivo que pone en marcha tu API
+        server.js
+
+RESUMEN FINAL
+
+Cliente → Middleware → Ruta → Controller → Modelo → DB
+                                           ↓
+Cliente ← Middleware ← Controller ← Modelo ← DB
