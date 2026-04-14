@@ -232,4 +232,105 @@ Cliente ← Middleware ← Controller ← Modelo ← DB
 
             Morgan funcionando + Mongo conectado
 
-14- 
+14- Desplegar en RENDER
+
+    1. Antes de entrar en Render
+
+        Asegúrate de que en GitHub ya has subido todo el proyecto y de que tu package.json tenga estos scripts:
+
+            {
+            "scripts": {
+                "dev": "nodemon server.js",
+                "start": "node server.js"
+            }
+            }
+
+        Render usa un Web Service para este tipo de app Node/Express, y en la configuración del servicio te pedirá, entre otras cosas, el repositorio, el lenguaje, el comando de build y el comando de arranque. Para Node, Render pone como ejemplos típicos npm install para build y npm start para start.
+
+    2. Crear el servicio en Render
+
+        Entra en Render y haz esto:
+
+            New → Web Service → conecta tu repositorio de GitHub.
+
+        Cuando te salga el formulario, rellénalo así:
+
+            Language: Node
+            Build Command: npm install
+            Start Command: npm start
+
+        Esos valores encajan con la guía actual de Render para apps Node/Express y con la documentación general de Web Services.
+
+    3. Variables de entorno
+
+        En la sección Environment añade al menos esta variable:
+
+            MY_MONGO_URI=mongodb+srv://USUARIO:PASSWORD@cluster0.xxxxx.mongodb.net/ejercicio_api_rest?retryWrites=true&w=majority
+
+        Render recomienda configurar secretos y credenciales como variables de entorno desde el panel del servicio, y permite añadirlas una a una o incluso importar desde un .env.
+
+        Sobre PORT: tu app debe seguir usando process.env.PORT || 3000, que ya lo haces bien. En Render, para Web Services, el puerto HTTP por defecto es 10000, y también puedes definir PORT manualmente si lo necesitas, pero normalmente basta con que tu servidor lea process.env.PORT.
+
+        Tu server.js debería quedarse así en esa parte:
+
+            const PORT = process.env.PORT || 3000;
+
+            app.listen(PORT, () => {
+            console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+            });
+
+        Eso vale tanto en local como en Render.
+
+    4. Lanzar el deploy
+
+        Después de guardar la configuración y las variables, pulsa desplegar. Render construirá el servicio con npm install y luego lo arrancará con npm start. Si cambias variables de entorno después, Render te deja guardarlas y desplegar de nuevo desde el mismo panel.
+
+    5. Qué URL te dará Render
+
+        Cuando termine, tendrás una URL pública del estilo:
+
+            https://tu-api.onrender.com
+
+        Y podrás probar, por ejemplo:
+
+            https://tu-api.onrender.com/
+            https://tu-api.onrender.com/api/providers
+            https://tu-api.onrender.com/api/products
+
+        Render asigna a cada Web Service un subdominio onrender.com basado en el nombre del servicio.
+
+    6. Qué revisar si falla
+
+        Los errores más típicos en este punto son estos:
+
+        Si falla al arrancar, revisa que el Start Command coincida con cómo arrancas tu app localmente; Render pone npm start como formato común para Node. Si falla por configuración, revisa si te falta MY_MONGO_URI, porque Render señala que una causa frecuente de fallos es la ausencia de variables de entorno necesarias.
+
+        Además, como tu base de datos está en Atlas, confirma en MongoDB Atlas que has permitido acceso de red desde Render; si no, tu app puede desplegar pero no conectar con la base.
+
+    7. Lo que entregarás al final
+
+        Cuando esté desplegado, tendrás que pasar:
+
+            el link del repositorio GitHub
+            el link de la API en Render
+
+        Por ejemplo:
+
+            Repositorio:
+                https://github.com/tuusuario/ejercicio-api-mongodb-mongoose
+
+            API:
+                https://tu-api.onrender.com
+    8. Mi recomendación para hacerlo sin liarte
+
+        Hazlo en este orden:
+
+        git add .
+        git commit -m "deploy render"
+        git push origin main
+        crear Web Service en Render
+        poner npm install
+        poner npm start
+        añadir MY_MONGO_URI
+        desplegar
+        abrir /api/providers para comprobar que responde
