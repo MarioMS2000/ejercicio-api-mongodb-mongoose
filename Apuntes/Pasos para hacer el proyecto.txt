@@ -70,6 +70,8 @@
         Separar lógica (arquitectura limpia).
         Reutilizar código.
         Facilitar mantenimiento.
+    
+    provider.service.js
 
 8- Controladores
 
@@ -140,3 +142,92 @@ RESUMEN FINAL
 Cliente → Middleware → Ruta → Controller → Modelo → DB
                                            ↓
 Cliente ← Middleware ← Controller ← Modelo ← DB
+
+
+12- PASO A PASO: Conectar con MongoDB Atlas
+        1. Ir a MongoDB Atlas
+
+        👉 https://www.mongodb.com/atlas
+
+        Crear cuenta (si no tienes)
+        Login
+
+    2. Crear proyecto
+        New Project
+        Nombre: ejercicio-api (por ejemplo)
+        Create
+
+    3. Crear cluster
+        Build a Database
+        Elige:
+        Free (M0) ✅
+        Create cluster
+
+        ⏳ Espera 1–2 minutos
+
+    4. Crear usuario de base de datos (MUY IMPORTANTE)
+
+        Te va a pedir:
+
+        Username: por ejemplo admin
+        Password: algo tipo 1234abcd
+
+        👉 GUÁRDALO, lo necesitarás luego
+
+    5. Permitir acceso a tu IP
+        Network Access → Add IP
+        Opción fácil:
+        0.0.0.0/0
+
+        👉 Permite acceso desde cualquier sitio (vale para el ejercicio)
+
+    6. Obtener la URI de conexión
+        Pulsa Connect
+        Elige:
+        👉 Drivers
+        Copia algo como esto:
+        mongodb+srv://admin:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority
+
+    7. Modificar tu .env
+
+        Cambia tu .env por esto:
+
+        PORT=3000
+        MY_MONGO_URI=mongodb+srv://admin:TU_PASSWORD@cluster0.xxxxx.mongodb.net/ejercicio_api_rest?retryWrites=true&w=majority
+
+        🔥 IMPORTANTE
+        Cambia TU_PASSWORD
+        Añade el nombre de la DB:
+        /ejercicio_api_rest
+
+        👉 si no lo pones, Mongo no sabe qué base usar
+
+    8. Reiniciar servidor
+
+        Para todo:
+
+        Ctrl + C
+
+        Y vuelve a lanzar:
+
+        npm run dev
+        ✅ Resultado correcto
+
+    Ahora deberías ver:
+
+        ✅ Conectado a MongoDB
+        🚀 Servidor corriendo en http://localhost:3000
+
+13- Probar ya la API
+
+        Ahora sí:
+
+            navegador o Postman:
+
+            http://localhost:3000/api/providers
+
+        Y en terminal:
+
+            GET /api/providers 200 ...
+
+            Morgan funcionando + Mongo conectado
