@@ -167,8 +167,8 @@ POST /api/providers 201 10ms
 
 ## ☁️ Deploy
 
-* 🔗 Repositorio GitHub: *(añadir enlace)*
-* 🌍 API en producción (Render): *(añadir enlace)*
+* 🔗 Repositorio GitHub: https://github.com/MarioMS2000/ejercicio-api-mongodb-mongoose
+* 🌍 API en producción (Render): **
 
 ---
 
